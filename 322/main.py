@@ -1,4 +1,5 @@
 from flask import Flask, url_for, request
+import os
 
 app = Flask(__name__)
 
@@ -316,6 +317,76 @@ def results(nickname, level, rating):
                         </div>
                       </body>
                     </html>"""
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def load_photo():
+    if request.method == 'GET':
+        return f"""<html>
+                        <head>
+                        <meta charset="utf-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                                <link rel="stylesheet"
+                                href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                                integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                                crossorigin="anonymous">
+                                <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
+                            <title>Загрузка фотографии</title>
+                        </head>
+                        <body>
+                            <div class="text-center">  
+                                <h2>Загрузка фотографии</h2>
+                            </div>
+                            <form class="login_form" method="post" enctype="multipart/form-data">
+                                   <div class="form-group">
+                                        <label for="photo">Выберите файл</label>
+                                        <input type="file" class="form-control-file" id="photo" name="file">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Отправить</button>
+                            </form>
+                        </body>
+                    </html>"""
+    elif request.method == 'POST':
+        f = request.files['file']
+        if f.filename == '':
+            return "Файл не выбран."
+        if f:
+            try:
+                filename = f.filename
+                file_path = os.path.join('static/img', filename)
+                file_path2 = f'img/{filename}'
+                print(file_path2)
+                f.save(file_path)
+                return f"""<html>
+                            <head>
+                            <meta charset="utf-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                                    <link rel="stylesheet"
+                                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                                    crossorigin="anonymous">
+                                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
+                                <title>Загрузка фотографии</title>
+                            </head>
+                            <body>
+                                <div class="text-center">  
+                                    <h2>Загрузка фотографии</h2>
+                                </div>
+                                <form class="login_form" method="post" enctype="multipart/form-data">
+                                       <div class="form-group">
+                                            <label for="photo">Выберите файл</label>
+                                            <input type="file" class="form-control-file" id="photo" name="file">
+                                        </div>
+                                        <img src="{url_for('static', filename=file_path2)}" 
+           alt="здесь должна была быть картинка, но не нашлась">
+                                        <button type="submit" class="btn btn-primary">Отправить</button>
+                                </form>
+                            </body>
+                        </html>"""
+            except Exception as e:
+                return f"Произошла ошибка: {str(e)}"
+        else:
+            return "Файл не выбран."
 
 
 if __name__ == '__main__':
