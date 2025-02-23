@@ -3,7 +3,12 @@ from flask import Flask, url_for, request
 app = Flask(__name__)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
+def index():
+    return 'Nope'
+
+
+@app.route('/astronaut_selection', methods=['POST', 'GET'])
 def form_sample():
     if request.method == 'GET':
         return f'''<!doctype html>
@@ -261,26 +266,53 @@ def choice(planet_name):
                         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
                     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
                     crossorigin="anonymous">
-                        <title>Колонизация</title>
+                        <title>Варианты выбора</title>
                       </head>
                       <body>
-                        <h1>Жди нас, Марс!</h1>
-                        <img src="{url_for('static', filename='img/MARS.png')}" 
-           alt="здесь должна была быть картинка, но не нашлась">
-                        <div class="alert alert-secondary" role="alert">
-                          Человечество вырастает из детства.
-                        </div>
+                        <h2>Мое предложение: {planet_name}</h2>
+                        <h4>Эта планета близка к Земле;</h4>
                         <div class="alert alert-success" role="alert">
-                          Человечеству мала одна планета.
+                          На ней много необходимых ресурсов;
                         </div>
                         <div class="alert alert-secondary" role="alert">
-                          Мы сделаем обитаемыми безжизненные пока планеты.
+                          На ней есть вода и атмосфера;
                         </div>
                         <div class="alert alert-warning" role="alert">
-                          И начнем с Марса!
+                          На ней есть небольшое магнитное поле;
                         </div>
                         <div class="alert alert-danger" role="alert">
-                          Присоединяйся!
+                          Наконец, она просто красива!
+                        </div>
+                      </body>
+                    </html>"""
+
+
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def results(nickname, level, rating):
+    return f"""<!doctype html>
+                    <html lang="en">
+                      <head>
+                        <meta charset="utf-8">
+                        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
+                        <link rel="stylesheet" 
+                        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
+                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
+                    crossorigin="anonymous">
+                        <title>Результаты</title>
+                      </head>
+                      <body>
+                        <h2>Результат отбора</h2>
+                        <h4>Претендента на участие в миссии {nickname}:</h4>
+                        <div class="alert alert-success" role="alert">
+                          Поздравляем! Ваш рейтинг после {level} этапа отбора
+                        </div>
+                        <div class="card mb-3">
+                          <div class="card-body">
+                            составляет {rating}!
+                          </div>
+                        </div>
+                        <div class="alert alert-warning" role="alert">
+                          Желаем удачи!
                         </div>
                       </body>
                     </html>"""
